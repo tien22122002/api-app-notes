@@ -1,0 +1,85 @@
+﻿Add-Migration "Initial Migration"
+
+
+Update-Database
+
+bearer token
+
+"Server=localhost;Database=ND2Assignworkv1;User Id=sa;Password=;"													---- Laptop Tiên
+
+"Server=.;Database=DBAssignwork;User Id=sa;Password=123; Trust Server Certificate=True;"							---- PC A Phú
+
+"Server=10.11.0.5,1433;Database=DBAssignwork;User Id=sa;Password=Tien.2212; Trust Server Certificate=True;"			---- server cục bộ
+
+"Server=146.190.89.3,9433;Database=DBAssignwork;User Id=sa;Password=Tien.2212; Trust Server Certificate=True;"		---- server public
+
+
+
+
+
+
+---------------------------mở docker --------------------------------
+
+--build docker
+docker build -t nd2assignwork:11.1.1 -f .\ND2Assignwork.API\Dockerfile .
+
+ -- save tar
+ docker save -o \\wsl.localhost\Ubuntu\home\tien2212\docker\nd2assignwork1111.tar nd2assignwork:11.1.1
+
+ ////////-- xong copy vào thư mục trong unbutu home/tien2212/docker 
+ 
+ -----------------------------------mở ubuntu --------------------
+ -- upload ubuntu
+rsync docker/nd2assignwork1111.tar sisyphus@146.190.89.3:/home/sisyphus/docker
+
+ -----------------------------------------------------------------
+
+--- vào remote
+ ssh sisyphus@146.190.89.3
+
+ -- vào thư mục server
+ cd nd2assignwork/
+ 
+
+----------CHÚ Ý: Phải ở trong thư mục nd2assignwork---------------
+--																--
+--		-- tắt server											--
+--		docker-compose down										--
+--																--
+--      -- xem thông tin đĩa									--
+--      docker images											--
+--																--
+--      -- xóa đĩa cũ											--
+--      docker image rm <ID>									--
+------------------------------------------------------------------
+
+   -- thoát ra thư mục ngoài cùng
+ cd
+
+ -- load đĩa docker
+ docker load -i docker/nd2assignwork1111.tar
+
+ -- vào thư mục server
+ cd nd2assignwork/
+
+----------CHÚ Ý: Phải ở trong thư mục nd2assignwork---------------
+--																--
+--		-- sửa phiên bản server ctrl+s và ctrl+x				--
+--		nano docker-compose.yml									--
+--																--
+--		-- bật server											--
+--		docker-compose up -d									--
+--																--
+--		-- kiểm tra												--
+--		docker-compose ps										--
+--																--
+------------------------------------------------------------------
+
+thư mục ngoài
+--		-------------Dọn dẹp-----------							--
+--		-- xóa ổ docker											--
+--		rm -rf docker/											--
+--																--
+--		-- tạo ổ mới											--
+--		mkdir docker											--
+--																--
